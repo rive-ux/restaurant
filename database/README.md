@@ -1,6 +1,6 @@
 # Databaza e restaurantit
 
-Ky folder permban databazen funksionale MySQL per projektin "Sistemi i menaxhimit te restaurantit".
+Ky folder permban databazen funksionale per projektin "Sistemi i menaxhimit te restaurantit".
 
 ## File kryesor
 
@@ -47,6 +47,52 @@ SELECT * FROM v_rezervimet;
 SELECT * FROM v_totali_porosive;
 SELECT * FROM v_te_ardhurat_ditore;
 ```
+
+## Si lidhet website-i me SQL Server
+
+Website-i nuk lidhet direkt me SQL Server. Lidhja behet permes backend-it Node.js qe gjendet ne folderin `backend/`.
+
+1. Sigurohu qe databaza `restaurant_db` eshte krijuar ne SSMS.
+2. Krijo nje file `.env` ne folderin kryesor te projektit, duke kopjuar `.env.example`.
+3. Ploteso te dhenat e SQL Server-it:
+
+   ```text
+   DB_SERVER=localhost
+   DB_PORT=1433
+   DB_DATABASE=restaurant_db
+   DB_USER=sa
+   DB_PASSWORD=passwordi_yt
+   ```
+
+4. Instalo paketat:
+
+   ```bash
+   npm install
+   ```
+
+5. Starto backend-in:
+
+   ```bash
+   npm start
+   ```
+
+6. Hape website-in me Live Server ose nga backend-i:
+
+   ```text
+   http://localhost:3000
+   ```
+
+7. Testo lidhjen:
+
+   ```text
+   http://localhost:3000/api/health
+   ```
+
+   Nese lidhja eshte ne rregull, kthen:
+
+   ```json
+   { "ok": true, "database": "connected" }
+   ```
 
 ## Si importohet ne phpMyAdmin
 

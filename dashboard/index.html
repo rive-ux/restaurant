@@ -369,9 +369,19 @@
       }
 
       function renderDashboard() {
-        var reservations = window.RestaurantReservations.getAll();
-        renderStats(reservations);
-        renderTable(reservations);
+        return window.RestaurantReservations.getAll().then(function (reservations) {
+          renderStats(reservations);
+          renderTable(reservations);
+        });
+      }
+
+      function refreshDashboard() {
+        renderDashboard().catch(function () {
+          return window.RestaurantReservations.getLocal().then(function (reservations) {
+            renderStats(reservations);
+            renderTable(reservations);
+          });
+        });
       }
 
       form.addEventListener('submit', function (event) {
@@ -384,10 +394,11 @@
           date: form.date.value,
           time: form.time.value,
           message: form.message.value
+        }).then(function () {
+          form.reset();
+          form.guests.value = 2;
+          refreshDashboard();
         });
-        form.reset();
-        form.guests.value = 2;
-        renderDashboard();
       });
 
       table.addEventListener('click', function (event) {
@@ -398,26 +409,28 @@
 
         var action = button.getAttribute('data-action');
         var id = button.getAttribute('data-id');
+        var request;
 
         if (action === 'confirm') {
-          window.RestaurantReservations.updateStatus(id, 'Konfirmuar');
+          request = window.RestaurantReservations.updateStatus(id, 'Konfirmuar');
         } else if (action === 'cancel') {
-          window.RestaurantReservations.updateStatus(id, 'Anuluar');
+          request = window.RestaurantReservations.updateStatus(id, 'Anuluar');
         } else if (action === 'delete') {
-          window.RestaurantReservations.remove(id);
+          request = window.RestaurantReservations.remove(id);
         }
 
-        renderDashboard();
+        if (request) {
+          request.then(refreshDashboard);
+        }
       });
 
       clearButton.addEventListener('click', function () {
         if (confirm('A je i sigurt qe do t\'i fshish te gjitha rezervimet?')) {
-          window.RestaurantReservations.clear();
-          renderDashboard();
+          window.RestaurantReservations.clear().then(refreshDashboard);
         }
       });
 
-      renderDashboard();
+      refreshDashboard();
     })();
   </script>
 </body>
