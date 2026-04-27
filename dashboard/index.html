@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Simfoni e Pjatave</title>
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/font-awesome.css">
+  <style>
+    :root {
+      --primary: #fb5849;
+      --dark: #2a2a2a;
+      --muted: #777;
+      --border: #ececec;
+      --bg: #f8f8fb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      color: var(--dark);
+      background: var(--bg);
+    }
+
+    .dashboard-header {
+      background: linear-gradient(135deg, rgba(251, 88, 73, 0.95), rgba(42, 42, 42, 0.92));
+      color: #fff;
+      padding: 34px 0;
+    }
+
+    .dashboard-header a {
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .dashboard-header h1 {
+      margin: 18px 0 8px;
+      font-size: 38px;
+      font-weight: 700;
+    }
+
+    .dashboard-header p {
+      max-width: 680px;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.86);
+    }
+
+    .dashboard-shell {
+      padding: 34px 0 46px;
+    }
+
+    .stat-card,
+    .panel {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 18px 45px rgba(42, 42, 42, 0.06);
+    }
+
+    .stat-card {
+      min-height: 132px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card span {
+      color: var(--muted);
+      display: block;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .stat-card strong {
+      color: var(--primary);
+      display: block;
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .panel {
+      padding: 26px;
+      margin-bottom: 24px;
+    }
+
+    .panel h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .form-control,
+    .custom-select {
+      border-radius: 12px;
+      min-height: 46px;
+    }
+
+    textarea.form-control {
+      min-height: 112px;
+    }
+
+    .btn-primary,
+    .btn-primary:hover,
+    .btn-primary:focus {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .table {
+      margin-bottom: 0;
+    }
+
+    .table thead th {
+      border-top: 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .table td {
+      vertical-align: middle;
+    }
+
+    .badge-status {
+      border-radius: 999px;
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 12px;
+    }
+
+    .badge-new {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .badge-confirmed {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .badge-cancelled {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .empty-state {
+      border: 2px dashed var(--border);
+      border-radius: 16px;
+      color: var(--muted);
+      padding: 30px;
+      text-align: center;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .action-buttons .btn {
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+
+    @media (max-width: 767px) {
+      .dashboard-header h1 {
+        font-size: 30px;
+      }
+
+      .panel {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="dashboard-header">
+    <div class="container">
+      <a href="../index.html"><i class="fa fa-arrow-left"></i> Kthehu te website</a>
+      <h1>Dashboard i Rezervimeve</h1>
+      <p>Ketu ruhen rezervimet nga forma kryesore. Te dhenat ruhen ne browser me localStorage dhe mund te menaxhohen nga kjo faqe.</p>
+    </div>
+  </header>
+
+  <main class="dashboard-shell">
+    <div class="container">
+      <div class="row" id="stats">
+        <div class="col-md-3 col-sm-6">
+          <div class="stat-card">
+            <span>Rezervime gjithsej</span>
+            <strong id="total-reservations">0</strong>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="stat-card">
+            <span>Te reja</span>
+            <strong id="new-reservations">0</strong>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="stat-card">
+            <span>Te konfirmuara</span>
+            <strong id="confirmed-reservations">0</strong>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="stat-card">
+            <span>Mysafire gjithsej</span>
+            <strong id="total-guests">0</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-4">
+          <section class="panel">
+            <h2>Shto rezervim</h2>
+            <form id="dashboard-reservation-form">
+              <div class="form-group">
+                <label for="dash-name">Emri</label>
+                <input class="form-control" id="dash-name" name="name" type="text" required>
+              </div>
+              <div class="form-group">
+                <label for="dash-email">Email</label>
+                <input class="form-control" id="dash-email" name="email" type="email" required>
+              </div>
+              <div class="form-group">
+                <label for="dash-phone">Telefoni</label>
+                <input class="form-control" id="dash-phone" name="phone" type="text" required>
+              </div>
+              <div class="form-group">
+                <label for="dash-guests">Numri i mysafireve</label>
+                <input class="form-control" id="dash-guests" name="guests" type="number" min="1" value="2" required>
+              </div>
+              <div class="form-group">
+                <label for="dash-date">Data</label>
+                <input class="form-control" id="dash-date" name="date" type="text" placeholder="dd.mm.yyyy" required>
+              </div>
+              <div class="form-group">
+                <label for="dash-time">Koha</label>
+                <select class="custom-select" id="dash-time" name="time" required>
+                  <option value="Mengjes">Mengjes</option>
+                  <option value="Mesdite">Mesdite</option>
+                  <option value="Evente">Evente</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="dash-message">Mesazh</label>
+                <textarea class="form-control" id="dash-message" name="message"></textarea>
+              </div>
+              <button class="btn btn-primary btn-block" type="submit">Ruaj rezervimin</button>
+            </form>
+          </section>
+        </div>
+
+        <div class="col-lg-8">
+          <section class="panel">
+            <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+              <h2 class="mb-2">Rezervimet e ruajtura</h2>
+              <button class="btn btn-outline-danger btn-sm mb-2" id="clear-reservations" type="button">Fshi te gjitha</button>
+            </div>
+            <div id="empty-state" class="empty-state">
+              Nuk ka rezervime ende. Ploteso formen ne website ose shto nje rezervim nga dashboard.
+            </div>
+            <div class="table-responsive" id="reservations-table-wrap" style="display: none;">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Klienti</th>
+                    <th>Kontakti</th>
+                    <th>Data</th>
+                    <th>Mysafire</th>
+                    <th>Statusi</th>
+                    <th>Veprime</th>
+                  </tr>
+                </thead>
+                <tbody id="reservations-table"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="../assets/js/reservations.js"></script>
+  <script>
+    (function () {
+      var form = document.getElementById('dashboard-reservation-form');
+      var table = document.getElementById('reservations-table');
+      var tableWrap = document.getElementById('reservations-table-wrap');
+      var emptyState = document.getElementById('empty-state');
+      var clearButton = document.getElementById('clear-reservations');
+
+      function escapeHtml(value) {
+        return String(value || '').replace(/[&<>"']/g, function (character) {
+          return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+          }[character];
+        });
+      }
+
+      function statusClass(status) {
+        if (status === 'Konfirmuar') {
+          return 'badge-confirmed';
+        }
+
+        if (status === 'Anuluar') {
+          return 'badge-cancelled';
+        }
+
+        return 'badge-new';
+      }
+
+      function guestNumber(value) {
+        var parsed = parseInt(String(value || '').replace(/\D/g, ''), 10);
+        return Number.isNaN(parsed) ? 0 : parsed;
+      }
+
+      function renderStats(reservations) {
+        document.getElementById('total-reservations').textContent = reservations.length;
+        document.getElementById('new-reservations').textContent = reservations.filter(function (reservation) {
+          return reservation.status === 'E re';
+        }).length;
+        document.getElementById('confirmed-reservations').textContent = reservations.filter(function (reservation) {
+          return reservation.status === 'Konfirmuar';
+        }).length;
+        document.getElementById('total-guests').textContent = reservations.reduce(function (total, reservation) {
+          return total + guestNumber(reservation.guests);
+        }, 0);
+      }
+
+      function renderTable(reservations) {
+        if (!reservations.length) {
+          tableWrap.style.display = 'none';
+          emptyState.style.display = 'block';
+          table.innerHTML = '';
+          return;
+        }
+
+        emptyState.style.display = 'none';
+        tableWrap.style.display = 'block';
+        table.innerHTML = reservations.map(function (reservation) {
+          return '<tr>' +
+            '<td><strong>' + escapeHtml(reservation.name) + '</strong><br><small>' + escapeHtml(reservation.message) + '</small></td>' +
+            '<td>' + escapeHtml(reservation.email) + '<br><small>' + escapeHtml(reservation.phone) + '</small></td>' +
+            '<td>' + escapeHtml(reservation.date) + '<br><small>' + escapeHtml(reservation.time) + '</small></td>' +
+            '<td>' + escapeHtml(reservation.guests) + '</td>' +
+            '<td><span class="badge-status ' + statusClass(reservation.status) + '">' + escapeHtml(reservation.status) + '</span></td>' +
+            '<td><div class="action-buttons">' +
+            '<button class="btn btn-outline-success" data-action="confirm" data-id="' + reservation.id + '" type="button">Konfirmo</button>' +
+            '<button class="btn btn-outline-warning" data-action="cancel" data-id="' + reservation.id + '" type="button">Anulo</button>' +
+            '<button class="btn btn-outline-danger" data-action="delete" data-id="' + reservation.id + '" type="button">Fshi</button>' +
+            '</div></td>' +
+            '</tr>';
+        }).join('');
+      }
+
+      function renderDashboard() {
+        var reservations = window.RestaurantReservations.getAll();
+        renderStats(reservations);
+        renderTable(reservations);
+      }
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        window.RestaurantReservations.add({
+          name: form.name.value,
+          email: form.email.value,
+          phone: form.phone.value,
+          guests: form.guests.value,
+          date: form.date.value,
+          time: form.time.value,
+          message: form.message.value
+        });
+        form.reset();
+        form.guests.value = 2;
+        renderDashboard();
+      });
+
+      table.addEventListener('click', function (event) {
+        var button = event.target.closest('button[data-action]');
+        if (!button) {
+          return;
+        }
+
+        var action = button.getAttribute('data-action');
+        var id = button.getAttribute('data-id');
+
+        if (action === 'confirm') {
+          window.RestaurantReservations.updateStatus(id, 'Konfirmuar');
+        } else if (action === 'cancel') {
+          window.RestaurantReservations.updateStatus(id, 'Anuluar');
+        } else if (action === 'delete') {
+          window.RestaurantReservations.remove(id);
+        }
+
+        renderDashboard();
+      });
+
+      clearButton.addEventListener('click', function () {
+        if (confirm('A je i sigurt qe do t\'i fshish te gjitha rezervimet?')) {
+          window.RestaurantReservations.clear();
+          renderDashboard();
+        }
+      });
+
+      renderDashboard();
+    })();
+  </script>
+</body>
+</html>
