@@ -8,13 +8,45 @@ Ky folder permban databazen funksionale MySQL per projektin "Sistemi i menaxhimi
 restaurant_db.sql
 ```
 
-Ky script krijon:
+Ky script eshte per MySQL/phpMyAdmin. Per SQL Server Management Studio perdor:
+
+```text
+restaurant_db_sql_server.sql
+```
+
+Script-et krijojne:
 
 - databazen `restaurant_db`
 - tabelat per klientet, tavolinat, rezervimet, stafin, kategorite, menune, porosite, detajet e porosive dhe pagesat
 - lidhjet me `FOREIGN KEY`
 - te dhena testuese
 - disa view/query praktike per raporte
+
+## Si importohet ne SQL Server Management Studio
+
+1. Hape `SQL Server Management Studio`.
+2. Lidhu me serverin tend lokal.
+3. Kliko `File` -> `Open` -> `File...`.
+4. Zgjedhe file-in:
+
+   ```text
+   database/restaurant_db_sql_server.sql
+   ```
+
+5. Kliko `Execute` ose shtyp `F5`.
+
+Pas ekzekutimit, databaza `restaurant_db` shfaqet te `Databases`.
+
+Query testuese per SQL Server:
+
+```sql
+USE restaurant_db;
+GO
+
+SELECT * FROM v_rezervimet;
+SELECT * FROM v_totali_porosive;
+SELECT * FROM v_te_ardhurat_ditore;
+```
 
 ## Si importohet ne phpMyAdmin
 
