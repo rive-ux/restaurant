@@ -47,7 +47,10 @@
                             <li class="scroll-to-section"><a href="#about">Për Në</a></li>
                             <li class="scroll-to-section"><a href="#menu">Menu</a></li>
                             <li class="scroll-to-section"><a href="#chefs">Kuzhinierët</a></li> 
-                            <li class="scroll-to-section"><a href="#reservation">Rezervo</a></li> 
+                            <li class="scroll-to-section"><a href="#reservation">Rezervo</a></li>
+                            <li class="scroll-to-section">
+                                <button type="button" id="btn-db-test" class="btn btn-sm btn-outline-light" style="margin-top: 10px;">Testo DB</button>
+                            </li>
                         </ul>        
                         <a class='menu-trigger'>
                             <span>Menu</span>
@@ -776,6 +779,21 @@
     
     <!-- Global Init -->
     <script src="assets/js/custom.js"></script>
+    <script>
+        (function () {
+            var API_BASE = 'http://localhost:3000';
+            document.getElementById('btn-db-test').addEventListener('click', function () {
+                fetch(API_BASE + '/api/db-status')
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        alert(data.ok ? data.message : 'Gabim: ' + data.message);
+                    })
+                    .catch(function () {
+                        alert('Nuk u arrit API-ja. Nis në folderin api: npm install && npm start. Hape faqen përmes një serveri lokal (jo file://).');
+                    });
+            });
+        })();
+    </script>
     <script>
 
         $(function() {
